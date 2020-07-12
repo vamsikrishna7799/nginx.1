@@ -1,11 +1,33 @@
-  jobs
-  
-- deployment: VMDeploy
+steps:
+- task: Maven@3
+  displayName: 'Maven pom.xml'
+  inputs:
+    codeCoverageToolOption: Cobertura
+    checkStyleRunAnalysis: true
+    pmdRunAnalysis: true
+    findBugsRunAnalysis: true
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.war'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+  jobs:
+  - deployment: VMDeploy
   displayName: web
-   environment:
-    name: <spring3HibernateVM>
-    resourceType: VirtualMachine
-  strategy:
+  environment:
+   name: <spring3HibernateVM>
+   resourceType: VirtualMachine
+   strategy:
       rolling:
         maxParallel: 2  #for percentages, mention as x%
         preDeploy:
