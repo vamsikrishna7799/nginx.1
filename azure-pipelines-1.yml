@@ -7,7 +7,7 @@ steps:
     pmdRunAnalysis: true
     findBugsRunAnalysis: true
     
-    steps:
+    
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
@@ -15,8 +15,6 @@ steps:
     Contents: '**/*.war'
     TargetFolder: '$(build.artifactstagingdirectory)'
   condition: succeededOrFailed()
-  
-  steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
   inputs:
